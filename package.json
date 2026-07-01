@@ -1,0 +1,23 @@
+{
+  "name": "mcp-ubuntu-insights",
+  "version": "0.1.0",
+  "description": "MCP server for Ubuntu system insights",
+  "type": "module",
+  "scripts": {
+    "build": "tsc && chmod 755 build/index.js"
+  },
+  "bin": {
+    "mcp-ubuntu-insights": "./build/index.js"
+  },
+  "files": [
+    "build"
+  ],
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.0",
+    "typescript": "^5.9.3"
+  }
+}
