@@ -215,7 +215,7 @@ server.registerTool(
   {
     description:
       "セキュリティ設定を包括的に診断し、コンプライアンスレポートと改善提案を返します。" +
-      "UFW/iptables、SSH設定、sudoers、失敗ログイン試行、自動更新、SUID/SGIDファイル等を確認します。",
+      "UFW、SSH設定、sudoers、失敗ログイン試行、自動更新、SUID/SGIDファイル等を確認します。",
     inputSchema: z.object({
       checks: z
         .array(z.enum(["firewall", "ssh", "sudo", "auth_log", "updates", "suid", "all"]))
@@ -228,7 +228,7 @@ server.registerTool(
 
     // ── 各チェックを並列実行 ──
     const [
-      ufwStatus, iptablesRules, ip6tablesRules,
+      ufwStatus,
       sshdConfig,
       sudoersFiles,
       authLogFail, journalFail,
@@ -241,9 +241,7 @@ server.registerTool(
       worldWritable,
     ] = await Promise.all([
       // firewall
-      (runAll || checks.includes("firewall")) ? run("ufw status verbose 2>/dev/null || echo 'ufw: not found'") : Promise.resolve("skipped"),
-      (runAll || checks.includes("firewall")) ? run("iptables -L -n --line-numbers 2>/dev/null || echo 'iptables: unavailable'") : Promise.resolve("skipped"),
-      (runAll || checks.includes("firewall")) ? run("ip6tables -L -n 2>/dev/null || echo 'ip6tables: unavailable'") : Promise.resolve("skipped"),
+      (runAll || checks.includes("firewall")) ? run("sudo ufw status verbose 2>/dev/null || echo 'ufw: not found'") : Promise.resolve("skipped"),
       // ssh
       (runAll || checks.includes("ssh")) ? readFile("/etc/ssh/sshd_config", "utf8").catch(() => "sshd_config: not found") : Promise.resolve("skipped"),
       // sudo
